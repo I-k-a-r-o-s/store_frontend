@@ -15,6 +15,8 @@ const Createpage = () => {
     image: "",
   });
 
+  const [loading,setloading]=useState(false)
+
   const handleErase = () => {
     if (
       itemDetails.name.length > 0 ||
@@ -32,9 +34,9 @@ const Createpage = () => {
     }
   };
 
-  const handleAddItem = async (e: any) => {
-    e.preventDefault();
+  const handleAddItem = async () => {    
     try {
+      setloading(true)
       if (
         !itemDetails.name.trim() ||
         !itemDetails.price.trim() ||
@@ -43,7 +45,20 @@ const Createpage = () => {
         toast.error("Please fill all the fields");
         return;
       }
-      await api.post("/", itemDetails);
+
+      const priceNumber = Number(itemDetails.price);
+      if (!Number.isFinite(priceNumber) || priceNumber < 0) {
+        toast.error("Price is invalid");
+        return;
+      }
+
+      const payload = {
+        name: itemDetails.name.trim(),
+        price: priceNumber,
+        image: itemDetails.image.trim(),
+      };
+
+      await api.post("/", payload);
       toast.success("Product created successfully");
       setItemDetails({
         name: "",
@@ -51,8 +66,11 @@ const Createpage = () => {
         image: "",
       });
     } catch (error) {
-      console.log("Error:", error);
-      toast.error("Error");
+      console.log("Create Product Error:", error);
+      toast.error("Create Product Error!");
+    }
+    finally{
+      setloading(false)
     }
   };
 
@@ -112,8 +130,8 @@ const Createpage = () => {
             </div>
 
             <div className="card-actions justify-end mt-4">
-              <button className="btn btn-primary" onClick={handleAddItem}>
-                Accept
+              <button className="btn btn-primary" onClick={handleAddItem} disabled={loading}>
+                {loading ? "Saving..." : "Accept"}
               </button>
               <button className="btn btn-ghost btn-error" onClick={handleErase}>
                 Clear
