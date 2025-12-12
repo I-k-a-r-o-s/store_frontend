@@ -7,7 +7,7 @@ const Navbar = () => {
     <div className="navbar bg-base-100 shadow-sm">
       <div className="navbar-start">
         <Link to={"/"}>
-          <a className="btn btn-ghost text-xl">Store</a>
+          <button className="btn btn-ghost text-xl">Store</button>
         </Link>
       </div>
       <div className="navbar-end gap-3">
