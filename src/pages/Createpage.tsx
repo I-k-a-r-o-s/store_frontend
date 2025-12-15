@@ -58,7 +58,7 @@ const Createpage = () => {
         image: itemDetails.image.trim(),
       };
 
-      await api.post("/", payload);
+      await api.post("/products", payload);
       toast.success("Product created successfully");
       setItemDetails({
         name: "",
