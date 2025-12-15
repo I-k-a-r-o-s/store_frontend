@@ -16,7 +16,7 @@ const Productcard = ({ item }: ProductCardProps) => {
       </figure>
       <div className="card-body">
         <h2 className="card-title text-xl">{item.name}</h2>
-        <h3 className="mt-2 font-semibold text-lg">{item.price}</h3>
+        <h3 className="mt-2 font-semibold text-lg">${item.price}</h3>
         <div className="text-sm text-gray-500">
           <p>
             Added to inventory at:{" "}
