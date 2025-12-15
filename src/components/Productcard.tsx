@@ -1,3 +1,4 @@
+import { SquarePen, Trash2 } from "lucide-react";
 import type { Item } from "../lib/types";
 
 interface ProductCardProps {
@@ -28,7 +29,12 @@ const Productcard = ({ item }: ProductCardProps) => {
           </p>
         </div>
         <div className="card-actions justify-end">
-          <button className="btn btn-primary">Buy Now</button>
+          <button className="btn btn-ghost text-primary">
+            <SquarePen />
+          </button>
+          <button className="btn btn-ghost text-error">
+            <Trash2 />
+          </button>
         </div>
       </div>
     </div>
