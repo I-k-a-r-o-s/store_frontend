@@ -1,12 +1,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import api from "../lib/axios";
-
-interface ItemDetails {
-  name: string;
-  price: string;
-  image: string;
-}
+import type { ItemDetails } from "../lib/types";
 
 const Createpage = () => {
   const [itemDetails, setItemDetails] = useState<ItemDetails>({
