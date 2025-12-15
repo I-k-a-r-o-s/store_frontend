@@ -99,7 +99,7 @@ const Createpage = () => {
 
               <label className="floating-label relative w-full block">
                 <input
-                  type="text"
+                  type="number"
                   placeholder="Price"
                   className="input input-lg w-full"
                   name="price"
