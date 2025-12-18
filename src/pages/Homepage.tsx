@@ -51,7 +51,7 @@ const Homepage = () => {
           <div className=" grid gap-6 w-full max-w-7xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 place-items-center">
             {" "}
             {items.map((item) => (
-              <Productcard item={item} key={item._id} />
+              <Productcard item={item} setItem={setItems} key={item._id} />
             ))}
           </div>
         </div>

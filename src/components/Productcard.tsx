@@ -1,11 +1,28 @@
 import { SquarePen, Trash2 } from "lucide-react";
 import type { Item } from "../lib/types";
+import api from "../lib/axios";
+import toast from "react-hot-toast";
 
 interface ProductCardProps {
   item: Item;
+  setItem: React.Dispatch<React.SetStateAction<Item[]>>;
 }
 
-const Productcard = ({ item }: ProductCardProps) => {
+const Productcard = ({ item, setItem }: ProductCardProps) => {
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this note?")) {
+      return;
+    }
+
+    try {
+      await api.delete(`/products/${id}`);
+      setItem((prev) => prev.filter((item) => item._id !== id));
+      toast.success("Product Removed!");
+    } catch (error) {
+      console.log("Failed to remove item:", error);
+      toast.error("Failed to Remove Product!");
+    }
+  };
   return (
     <div className="card bg-base-100 shadow-sm w-full max-w-sm">
       <figure>
@@ -32,7 +49,10 @@ const Productcard = ({ item }: ProductCardProps) => {
           <button className="btn btn-ghost text-primary">
             <SquarePen />
           </button>
-          <button className="btn btn-ghost text-error">
+          <button
+            className="btn btn-ghost text-error"
+            onClick={() => handleDelete(item._id)}
+          >
             <Trash2 />
           </button>
         </div>
