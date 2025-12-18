@@ -5,10 +5,10 @@ import toast from "react-hot-toast";
 
 interface ProductCardProps {
   item: Item;
-  setItem: React.Dispatch<React.SetStateAction<Item[]>>;
+  onDeleted?:(id:string)=>void
 }
 
-const Productcard = ({ item, setItem }: ProductCardProps) => {
+const Productcard = ({ item, onDeleted }: ProductCardProps) => {
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this note?")) {
       return;
@@ -16,7 +16,7 @@ const Productcard = ({ item, setItem }: ProductCardProps) => {
 
     try {
       await api.delete(`/products/${id}`);
-      setItem((prev) => prev.filter((item) => item._id !== id));
+      onDeleted?.(id)
       toast.success("Product Removed!");
     } catch (error) {
       console.log("Failed to remove item:", error);
