@@ -2,13 +2,15 @@ import { SquarePen, Trash2 } from "lucide-react";
 import type { Item } from "../lib/types";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
+import { useState } from "react";
 
 interface ProductCardProps {
   item: Item;
   onDeleted?: (id: string) => void;
+  onUpdated?: (updatedItem: Item) => void;
 }
 
-const Productcard = ({ item, onDeleted }: ProductCardProps) => {
+const Productcard = ({ item, onDeleted, onUpdated }: ProductCardProps) => {
   const handleDelete = async (id: string) => {
     try {
       await api.delete(`/products/${id}`);
@@ -20,10 +22,45 @@ const Productcard = ({ item, onDeleted }: ProductCardProps) => {
     }
   };
 
-  const modalId = `delete_modal_${item._id}`;
+  const deleteModalId = `delete_modal_${item._id}`;
+  const updateModalId = `update_moadl_${item._id}`;
+
+  const [name, setName] = useState(item.name);
+  const [image, setImage] = useState(item.image);
+  const [price, setPrice] = useState(String(item.price));
+
+  const editModal = () => {
+    setName(item.name);
+    setPrice(String(item.price));
+    setImage(item.image);
+    (document.getElementById(updateModalId) as HTMLDialogElement)?.showModal();
+  };
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const res = await api.patch(`/products/${item._id}`, {
+        name,
+        price: Number(price),
+        image,
+      });
+
+      const updatedProduct = res.data.product;
+
+      onUpdated?.(updatedProduct);
+      toast.success("Product updated");
+
+      (document.getElementById(updateModalId) as HTMLDialogElement)?.close();
+    } catch (err) {
+      console.error(err);
+      toast.error("Update failed");
+    }
+  };
 
   return (
     <div>
+      {/*Card*/}
       <div className="card bg-base-100 shadow-sm w-full max-w-sm">
         <figure>
           <img
@@ -50,14 +87,14 @@ const Productcard = ({ item, onDeleted }: ProductCardProps) => {
             </p>
           </div>
           <div className="card-actions justify-end">
-            <button className="btn btn-ghost text-primary">
+            <button className="btn btn-ghost text-primary" onClick={editModal}>
               <SquarePen />
             </button>
             <button
               className="btn btn-ghost text-error"
               onClick={() =>
                 (
-                  document.getElementById(modalId) as HTMLDialogElement
+                  document.getElementById(deleteModalId) as HTMLDialogElement
                 )?.showModal()
               }
             >
@@ -67,7 +104,8 @@ const Productcard = ({ item, onDeleted }: ProductCardProps) => {
         </div>
       </div>
 
-      <dialog id={modalId} className="modal modal-bottom sm:modal-middle">
+      {/*Delete confirmation*/}
+      <dialog id={deleteModalId} className="modal modal-bottom sm:modal-middle">
         <div className="modal-box">
           <h3 className="font-bold text-lg">Delete Product?</h3>
           <p className="py-4">
@@ -86,6 +124,59 @@ const Productcard = ({ item, onDeleted }: ProductCardProps) => {
             >
               Delete
             </button>
+          </div>
+        </div>
+      </dialog>
+
+      {/*Update confirmation*/}
+      <dialog id={updateModalId} className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg mb-5">Edit Product</h3>
+          <div className="space-y-4">
+            <label className="floating-label">
+              <input
+                type="text"
+                placeholder="Name"
+                className="input input-lg"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                }}
+              />
+              <span>Name</span>
+            </label>
+            <label className="floating-label">
+              <input
+                type="number"
+                placeholder="Price"
+                className="input input-lg"
+                value={price}
+                onChange={(e) => {
+                  setPrice(e.target.value);
+                }}
+              />
+              <span>Price</span>
+            </label>
+            <label className="floating-label">
+              <input
+                type="text"
+                placeholder="Image"
+                className="input input-lg"
+                value={image}
+                onChange={(e) => {
+                  setImage(e.target.value);
+                }}
+              />
+              <span>Image</span>
+            </label>
+          </div>
+          <div className="modal-action ">
+            <form method="dialog" className="flex gap-2">
+              <button className="btn btn-primary" onClick={handleUpdate}>
+                Update
+              </button>
+              <button className="btn">Close</button>
+            </form>
           </div>
         </div>
       </dialog>

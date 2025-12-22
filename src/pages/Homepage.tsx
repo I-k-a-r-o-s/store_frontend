@@ -26,9 +26,16 @@ const Homepage = () => {
     fetchItems();
   }, []);
 
+  {/*Refresh UI upon Delete*/}
   const handleDeleted = (id: string) => {
     setItems((prev) => prev.filter((item) => item._id !== id));
     toast.success("Product removed");
+  };
+
+  {/*Refresh UI upon Update*/}
+  const handleUpdated = (updatedItem: Item) => {
+    setItems((prev) => prev.map((i) => (i._id === updatedItem._id ? updatedItem : i)));
+    toast.success("Product updated");
   };
 
   return (
@@ -59,6 +66,7 @@ const Homepage = () => {
               <Productcard
                 item={item}
                 onDeleted={handleDeleted}
+                onUpdated={handleUpdated}
                 key={item._id}
               />
             ))}
